@@ -7,5 +7,4 @@
 /.idea
 *.pyc
 .DS_Store
-/logs/test
-/logs/train
+/logs
