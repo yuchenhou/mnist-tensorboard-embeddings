@@ -74,10 +74,9 @@ if __name__ == '__main__':
                         help='If true, uses fake data for unit testing.')
     parser.add_argument('--max_steps', type=int, default=10000,
                         help='Number of steps to run trainer.')
-    parser.add_argument('--data_dir', type=str, default='/home/yuchen/PycharmProjects/mnist-tensorboard-embeddings/mnist_data',
+    parser.add_argument('--data_dir', type=str, default='mnist_data',
                         help='Directory for storing input data')
-    parser.add_argument('--log_dir', type=str, default='/home/yuchen/PycharmProjects/mnist-tensorboard-embeddings/logs',
+    parser.add_argument('--log_dir', type=str, default='logs',
                         help='Summaries log directory')
     FLAGS, unparsed = parser.parse_known_args()
     tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
-
