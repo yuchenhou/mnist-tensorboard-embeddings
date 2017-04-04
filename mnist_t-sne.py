@@ -12,29 +12,19 @@ from tensorflow.contrib.tensorboard.plugins import projector
 import tensorflow as tf
 
 from tensorflow.examples.tutorials.mnist import input_data
+
 FLAGS = None
 
+
 def generate_embeddings():
-    # Import data
-    mnist = input_data.read_data_sets(FLAGS.data_dir,
-                                      one_hot=True,
-                                      fake_data=FLAGS.fake_data)
+    mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True, fake_data=FLAGS.fake_data)
     sess = tf.InteractiveSession()
-
-    # Input set for Embedded TensorBoard visualization
-    # Performed with cpu to conserve memory and processing power
-    with tf.device("/cpu:0"):
-        embedding = tf.Variable(tf.stack(mnist.test.images[:FLAGS.max_steps], axis=0), trainable=False, name='embedding')
-
+    embedding = tf.Variable(tf.stack(mnist.test.images[:FLAGS.max_steps], axis=0), trainable=False, name='embedding')
     tf.global_variables_initializer().run()
-
     saver = tf.train.Saver()
     writer = tf.summary.FileWriter(FLAGS.log_dir + '/projector', sess.graph)
-
-    # Add embedding tensorboard visualization. Need tensorflow version
-    # >= 0.12.0RC0
     config = projector.ProjectorConfig()
-    embed= config.embeddings.add()
+    embed = config.embeddings.add()
     embed.tensor_name = 'embedding:0'
     embed.metadata_path = os.path.join(FLAGS.log_dir + '/projector/metadata.tsv')
     embed.sprite.image_path = os.path.join(FLAGS.data_dir + '/mnist_10k_sprite.png')
@@ -46,11 +36,9 @@ def generate_embeddings():
     saver.save(sess, os.path.join(
         FLAGS.log_dir, 'projector/a_model.ckpt'), global_step=FLAGS.max_steps)
 
+
 def generate_metadata_file():
-    # Import data
-    mnist = input_data.read_data_sets(FLAGS.data_dir,
-                                      one_hot=True,
-                                      fake_data=FLAGS.fake_data)
+    mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True, fake_data=FLAGS.fake_data)
     def save_metadata(file):
         with open(file, 'w') as f:
             for i in range(FLAGS.max_steps):
@@ -59,13 +47,15 @@ def generate_metadata_file():
 
     save_metadata(FLAGS.log_dir + '/projector/metadata.tsv')
 
+
 def main(_):
     if tf.gfile.Exists(FLAGS.log_dir + '/projector'):
         tf.gfile.DeleteRecursively(FLAGS.log_dir + '/projector')
         tf.gfile.MkDir(FLAGS.log_dir + '/projector')
-    tf.gfile.MakeDirs(FLAGS.log_dir  + '/projector') # fix the directory to be created
+    tf.gfile.MakeDirs(FLAGS.log_dir + '/projector')  # fix the directory to be created
     generate_metadata_file()
     generate_embeddings()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
